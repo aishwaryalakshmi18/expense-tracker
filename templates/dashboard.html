@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Dashboard</h1>
+
+{% if not budget_data %}
+  <p>No budgets set yet. <a href="{{ url_for('set_budget') }}">Set a budget</a> to see alerts here.</p>
+{% endif %}
+
+<div class="budget-grid">
+  {% for b in budget_data %}
+    <div class="budget-card status-{{ b.status }}">
+      <h3>{{ b.category }}</h3>
+      <p>{{ b.spent }} / {{ b.limit }} ({{ b.raw_pct }}%)</p>
+      <div class="progress-bar">
+        <div class="progress-fill status-{{ b.status }}" style="width: {{ b.pct }}%;"></div>
+      </div>
+      {% if b.status == 'over' %}
+        <span class="badge badge-red">Over budget</span>
+      {% elif b.status == 'warning' %}
+        <span class="badge badge-yellow">Nearing limit</span>
+      {% else %}
+        <span class="badge badge-green">On track</span>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+{% if budget_data %}
+<h2>Spending by Category</h2>
+<canvas id="pieChart" width="400" height="400"></canvas>
+{% endif %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+  const labels = {{ chart_labels | tojson }};
+  const values = {{ chart_values | tojson }};
+
+  if (labels.length > 0) {
+    new Chart(document.getElementById('pieChart'), {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: values,
+          backgroundColor: ['#4e79a7', '#f28e2b', '#e15759', '#76b7b2', '#59a14f']
+        }]
+      }
+    });
+  }
+</script>
+{% endblock %}
