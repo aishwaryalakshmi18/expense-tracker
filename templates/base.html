@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}Expense Tracker{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}"><script src="https://cdn.jsdelivr.net/npm/chart.js"></script></head>
+<body><div class="shell"><aside class="sidebar"><a class="brand" href="{{ url_for('dashboard') }}"><span class="logo">₹</span><span>Expense Tracker<small>PERSONAL FINANCE</small></span></a>
+<div class="nav-label">WORKSPACE</div><nav>
+<a class="{{ 'active' if request.endpoint=='dashboard' else '' }}" href="{{ url_for('dashboard') }}">◫ &nbsp; Dashboard</a>
+<a class="{{ 'active' if request.endpoint in ['transactions','transaction_form'] else '' }}" href="{{ url_for('transactions') }}">↔ &nbsp; Transactions</a>
+<a class="{{ 'active' if request.endpoint=='recurring' else '' }}" href="{{ url_for('recurring') }}">⟳ &nbsp; Recurring payments</a>
+<a class="{{ 'active' if request.endpoint=='needs_review' else '' }}" href="{{ url_for('needs_review') }}">◷ &nbsp; Needs review</a>
+<a class="{{ 'active' if request.endpoint=='budgets' else '' }}" href="{{ url_for('budgets') }}">▤ &nbsp; Budgets</a>
+<a class="{{ 'active' if request.endpoint=='analytics' else '' }}" href="{{ url_for('analytics') }}">◔ &nbsp; Analytics</a></nav>
+<div class="side-bottom"><div class="help"><b>✦ Stay on top of it</b><p>Review recurring payments so no month gets missed.</p><a href="{{ url_for('needs_review') }}">Review payments →</a></div><div class="profile"><span class="avatar">₹</span><span><b>My finances</b><small>INR · India</small></span></div></div></aside>
+<main class="main"><header class="topbar"><div class="crumb">Personal Finance <span>/</span> {% block crumb %}Dashboard{% endblock %}</div><div class="top-actions"><span class="currency">₹ INR</span><a class="btn primary small" href="{{ url_for('transaction_form') }}">＋ Add transaction</a></div></header>
+{% with messages=get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-wrap">{% for c,m in messages %}<div class="flash {{ c }}">{{ m }}</div>{% endfor %}</div>{% endif %}{% endwith %}
+<section class="content">{% block content %}{% endblock %}</section><footer>Expense Tracker · Your money, made clearer · All amounts in INR (₹)</footer></main></div>
+<script src="{{ url_for('static',filename='app.js') }}"></script>{% block scripts %}{% endblock %}</body></html>
