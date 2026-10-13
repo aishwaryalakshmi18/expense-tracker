@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Set Monthly Budget</h1>
+
+<form method="POST" action="{{ url_for('set_budget') }}">
+  <label>Category</label>
+  <select name="category" required>
+    {% for c in categories %}
+      <option value="{{ c }}">{{ c }}</option>
+    {% endfor %}
+  </select>
+
+  <label>Monthly Limit</label>
+  <input type="number" name="monthly_limit" step="0.01" min="0.01" required>
+
+  <button type="submit">Save Budget</button>
+</form>
+
+<h2>Current Budgets</h2>
+<table>
+  <thead><tr><th>Category</th><th>Monthly Limit</th></tr></thead>
+  <tbody>
+    {% for b in budgets %}
+      <tr><td>{{ b.category }}</td><td>{{ b.monthly_limit }}</td></tr>
+    {% else %}
+      <tr><td colspan="2">No budgets set yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
